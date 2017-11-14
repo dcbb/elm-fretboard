@@ -35,26 +35,26 @@ listShift n lst =
 notesInOrder = String.split "," "C,C#,D,D#,E,F,F#,G,G#,A,A#,B"
 
 intervalNames = Dict.fromList [ ( 0, "R")
-                             , ( 1, "m2")
-                             , ( 2, "2") 
-                             , ( 3, "m3")
-                             , ( 4, "3") 
-                             , ( 5, "4") 
-                             , ( 6, "b5")
-                             , ( 7, "5") 
-                             , ( 8, "#5")
-                             , ( 9, "6") 
-                             , (10, "b7")
-                             , (11, "7") 
-                             , (13, "b9") 
-                             , (14, "9") 
-                             , (15, "#9") 
-                             , (16, "b11") 
-                             , (17, "11") 
-                             , (18, "#11") 
-                             , (20, "b13") 
-                             , (22, "13") 
-                             , (23, "#13") 
+                              , ( 1, "b2")
+                              , ( 2, "2") 
+                              , ( 3, "m3")
+                              , ( 4, "3") 
+                              , ( 5, "4") 
+                              , ( 6, "b5")
+                              , ( 7, "5") 
+                              , ( 8, "#5")
+                              , ( 9, "6") 
+                              , (10, "b7")
+                              , (11, "7") 
+                              , (13, "b9") 
+                              , (14, "9") 
+                              , (15, "#9") 
+                              , (16, "b11") 
+                              , (17, "11") 
+                              , (18, "#11") 
+                              , (19, "b13") 
+                              , (20, "13") 
+                              , (21, "#13") 
                              ] 
 
 intervalColors = Dict.fromList [ ( 0, Color.black) -- "R"
@@ -66,7 +66,7 @@ intervalColors = Dict.fromList [ ( 0, Color.black) -- "R"
                                , ( 6, Color.lightGreen) -- "b5"
                                , ( 7, Color.green) -- "5"
                                , ( 8, Color.darkGreen) -- "#5"
-                               , ( 9, Color.brown) -- "6"
+                               , ( 9, Color.yellow) -- "6"
                                , (10, Color.lightRed) -- "b7"
                                , (11, Color.red)  -- "7"
                                , (13, Color.lightOrange)  -- "b9"
@@ -75,9 +75,9 @@ intervalColors = Dict.fromList [ ( 0, Color.black) -- "R"
                                , (16, Color.lightPurple)  -- "b11"
                                , (17, Color.purple)  -- "11"
                                , (18, Color.darkPurple)  -- "#11"
-                               , (20, Color.lightBrown)  -- "b13"
-                               , (22, Color.brown)  -- "13"
-                               , (23, Color.darkBrown)  -- "#13" 
+                               , (19, Color.lightBrown)  -- "b13"
+                               , (20, Color.brown)  -- "13"
+                               , (21, Color.darkBrown)  -- "#13" 
                                ] 
 
 -- Interval in semitones between two notes, if valid names are provided.
