@@ -27,10 +27,12 @@ setToggle el set =
 
 listShift : Int -> List a -> List a
 listShift n lst = 
-    case (n, lst) of
-        (0, _) -> lst
-        (n, h::t)  -> listShift (n-1) (t ++ [h])
-        (_, []) -> []
+    if n < 1 then
+        lst
+    else
+        case (n, lst) of
+            (n, h::t)  -> listShift (n-1) (t ++ [h])
+            (_, []) -> []
 
 notesInOrder = String.split "," "C,C#,D,D#,E,F,F#,G,G#,A,A#,B"
 
@@ -178,7 +180,7 @@ type NoteLabels
     | Note
 
 type alias Model = 
-    { highlight : Int 
+    { highlight : Maybe Int 
     , selection : Set Int 
     , rootNote : String 
     , noteLabels : NoteLabels
@@ -186,7 +188,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init = ( 
-    { highlight = -1 
+    { highlight = Nothing 
     , selection = Set.fromList [0] 
     , rootNote = "E" 
     , noteLabels = Interval
@@ -205,10 +207,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         IntervalHighlightOn interval -> 
-            { model | highlight = interval} ! []
+            { model | highlight = Just interval} ! []
 
         IntervalHighlightOff -> 
-            { model | highlight = -1 } ! []
+            { model | highlight = Nothing } ! []
 
         ToggleIntervalSelection iv -> 
             { model | selection = setToggle iv model.selection } ! []
@@ -245,7 +247,7 @@ view model =
                 [ onMouseOver (IntervalHighlightOn interval)
                 , onMouseOut IntervalHighlightOff
                 , onClick (ToggleIntervalSelection interval)
-                , vary Highlight (model.highlight==interval || model.highlight==interval + 12) ] 
+                , vary Highlight (model.highlight==Just interval || model.highlight==Just (interval + 12)) ] 
                 (el ColoredLabel [center, verticalCenter, vary Selected isSelected] (text label))
         
         guitarString rootNoteShift =
