@@ -183,15 +183,16 @@ type alias Model =
     { highlight : Maybe Int 
     , selection : Set Int 
     , rootNote : String 
-    , noteLabels : NoteLabels
+    , noteLabelType : NoteLabels
     }
 
 init : ( Model, Cmd Msg )
 init = ( 
     { highlight = Nothing 
+    -- initially showing root
     , selection = Set.fromList [0] 
     , rootNote = "E" 
-    , noteLabels = Interval
+    , noteLabelType = Interval
     }, 
     Cmd.none )
 
@@ -212,16 +213,17 @@ update msg model =
         IntervalHighlightOff -> 
             { model | highlight = Nothing } ! []
 
-        ToggleIntervalSelection iv -> 
-            { model | selection = setToggle iv model.selection } ! []
+        ToggleIntervalSelection interval -> 
+            { model | selection = setToggle interval model.selection } ! []
         
         SetRoot root -> 
             { model | rootNote = root } ! []
 
         ToggleNoteLabelType -> 
-            { model | noteLabels = if model.noteLabels == Note then Interval else Note } ! []
+            { model | noteLabelType = if model.noteLabelType == Note then Interval else Note } ! []
 
         ClearIntervalSelection -> 
+            -- always clear to showing the root
             { model | selection = Set.fromList [0] } ! []
 
 
@@ -238,7 +240,7 @@ view model =
                 minInterval = intervalBetween model.rootNote noteName |> withDefault -100 
                 interval = if Set.member (minInterval + 12) model.selection then minInterval + 12 else minInterval 
                 isSelected = Set.member interval model.selection || Set.member (interval + 12) model.selection
-                label = case model.noteLabels of
+                label = case model.noteLabelType of
                     Note -> noteName
                     Interval -> withDefault "?" (Dict.get interval intervalNames)
             in
@@ -299,7 +301,7 @@ view model =
 
         noteDisplayMode = 
             let
-                label = case model.noteLabels of
+                label = case model.noteLabelType of
                     Interval -> "show notes"
                     Note -> "show intervals"
             in
