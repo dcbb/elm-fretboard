@@ -37,7 +37,7 @@ notesInOrder = String.split "," "C,C#,D,D#,E,F,F#,G,G#,A,A#,B"
 intervalNames = Dict.fromList [ ( 0, "R")
                               , ( 1, "b2")
                               , ( 2, "2") 
-                              , ( 3, "m3")
+                              , ( 3, "b3")
                               , ( 4, "3") 
                               , ( 5, "4") 
                               , ( 6, "b5")
@@ -268,10 +268,12 @@ view model =
 
         intervalButton interval = 
             el (Colored interval (Set.member interval model.selection)) 
-                [spacing 20, padding (scale 1)
+                [ spacing 20, padding (scale 1)
                 , onClick (ToggleIntervalSelection interval)
                 , onMouseOver (IntervalHighlightOn interval)
-                , onMouseOut IntervalHighlightOff ] 
+                , onMouseOut IntervalHighlightOff 
+                , center
+                , verticalCenter] 
                 (text <| withDefault "?" <| Dict.get interval intervalNames)
 
         clearIntervalButton = 
@@ -302,6 +304,45 @@ view model =
             row Default [padding (scale 1), spacing 20, center, verticalCenter] [
                 el Button [spacing 20, padding (scale 1), onClick ToggleNoteLabelType] (text label)
             ]
+
+        intervalButtonCells1 =
+            let 
+                intervals = intervalNames |> Dict.keys |> List.filter (\iv -> iv <= 12)
+                buttons = List.map intervalButton intervals
+            in
+            buttons 
+                |> List.indexedMap 
+                    (\col btn -> 
+                        cell 
+                            { start = (col, 1)
+                            , width = 1, height = 1
+                            , content = row Default [center, padding 5] [btn] }
+                    )
+
+        intervalButtonCells2 =
+            let 
+                intervals = intervalNames |> Dict.keys |> List.filter (\iv -> iv > 12)
+                buttons = (empty :: (List.map intervalButton intervals)) ++ [empty, empty, clearIntervalButton]
+            in
+            buttons 
+                |> List.indexedMap 
+                    (\col btn -> 
+                        cell 
+                            { start = (col, 2)
+                            , width = 1 , height = 1
+                            , content = row Default [center, padding 5] [btn] }
+                    )
+
+
+        intervalButtonGrid = 
+            grid Default [center, verticalCenter]
+                { columns = []-- List.repeat 13 (px 100) -- px 100, px 100, px 100, px 100
+                , rows =
+                    [ 
+                    ]
+                , cells = intervalButtonCells1 ++ intervalButtonCells2
+                }
+
     in
             
     Element.layout stylesheet <| row Default [center, verticalCenter, width fill, height fill] [
@@ -309,8 +350,9 @@ view model =
                 [el Headline [padding (scale 2), center] (text <| String.fromChar <| Char.fromCode  <| 0x266C)] ++ 
                 (List.map guitarString rootNoteShifts) ++ 
                 [ rootNoteRow
-                , intervalButtonRow1
-                , intervalButtonRow2
+                , intervalButtonGrid
+                --, intervalButtonRow1
+                --, intervalButtonRow2
                 , noteDisplayMode]
             )
         ]
